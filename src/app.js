@@ -1,16 +1,28 @@
 import express, { urlencoded } from "express";
 import dotenv from "dotenv";
-import cors from "cors"
+import cors from "cors";
 import cookieParser from "cookie-parser";
 
 const app = express();
- 
+
 dotenv.config({
     path: "../.env",
 });
 
+// Check if the environment is production or development
+const allowedOrigins = [
+    "http://localhost:5173", // Local development
+    "https://tubular-paletas-c6fe5a.netlify.app", // Netlify frontend
+];
+
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: function(origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true); // Allow the request
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
 }));
 
@@ -21,8 +33,6 @@ app.use(cookieParser());
 import { adminRouter } from "./routes/admin.route.js";
 import { studentRouter } from "./routes/student.route.js";
 app.use("/api/v1/admin", adminRouter);
-app.use("/api/v1/student",studentRouter);
+app.use("/api/v1/student", studentRouter);
 
-export {
-    app
-}
+export { app };
