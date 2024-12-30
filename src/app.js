@@ -12,7 +12,7 @@ dotenv.config({
 // Check if the environment is production or development
 const allowedOrigins = [
     "http://localhost:5173", // Local development
-    "https://tubular-paletas-c6fe5a.netlify.app", // Netlify frontend
+    "https://library-app-frontend-m1sw.onrender.com", // Netlify frontend
 ];
 
 app.use(cors({
