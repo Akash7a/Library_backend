@@ -14,6 +14,7 @@ const authenticateAdmin = async (req, res, next) => {
 
         const admin = await Admin.findById(decoded._id);
 
+        console.log("admin",admin)
         if (!admin) {
             return res.status(401).json({ message: "Unauthorized request, admin not found." });
         }
