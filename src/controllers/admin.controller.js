@@ -1,4 +1,5 @@
 import { Admin } from "../models/admin.model.js";
+import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const options = {
     httpOnly: true,
@@ -9,8 +10,8 @@ const registerAdmin = async (req, res) => {
     try {
         const { username, email, password } = req.body;
 
-        if ([username, email, password].some((incomingDetails) => !incomingDetails)) {
-            return res.status(400).json({ message: "Username, Email, and Password are required." });
+        if ([username, email, password].some((incomingDetails) => !incomingDetails) || !req.file) {
+            return res.status(400).json({ message: "Username, Email, Password, and Profile Picture are required." });
         }
 
         const existingAdmin = await Admin.findOne({ $or: [{ email }, { username }] });
@@ -19,15 +20,25 @@ const registerAdmin = async (req, res) => {
             return res.status(400).json({ message: "Admin already exists with email or username." });
         }
 
+        const profileLocalPath = req.file.path;
+
+        const profile = await uploadOnCloudinary(profileLocalPath);
+
+        if (!profile || !profile.url) {
+            return res.status(500).json({ message: "Failed to upload profile picture to Cloudinary." });
+        }
+
         const newAdmin = new Admin({
             username,
             email,
             password,
+            profilePic: profile.url,
         });
 
         await newAdmin.save();
 
         const token = await newAdmin.generateToken();
+
         return res
             .cookie("token", token, options)
             .status(201)
@@ -68,7 +79,12 @@ const loginAdmin = async (req, res) => {
             .cookie("token", token, options)
             .status(200)
             .json({
-                admin: admin,
+                admin:{
+                    username: admin.username,
+                    email: admin.email,
+                    profilePic: admin.profilePic,
+                    myStudents: admin.myStudents,
+                },
                 token: token,
                 message: "Admin logged in successfully.",
             });
@@ -96,6 +112,7 @@ const adminProfile = async (req, res) => {
                 id: admin._id,
                 username: admin.username,
                 email: admin.email,
+                profilePic: admin.profilePic,
                 myStudents: admin.myStudents,
             },
             message: "Admin profile fetched successfully."
@@ -115,7 +132,6 @@ const adminLogout = async (req, res) => {
         return res.status(500).json({ message: "Internal Server Error", error: error.message });
     }
 }
-
 export {
     registerAdmin,
     loginAdmin,

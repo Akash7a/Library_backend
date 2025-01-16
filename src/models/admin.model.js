@@ -18,10 +18,14 @@ const adminSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        myStudents:[
+        profilePic: {
+            type: String,
+            required: false,
+        },
+        myStudents: [
             {
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"Students"
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Students"
             }
         ]
     },

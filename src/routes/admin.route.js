@@ -8,10 +8,11 @@ import{
     adminProfile,
 } 
 from "../controllers/admin.controller.js";
+import upload from "../middleware/multer.js";
 
 const adminRouter = Router();
 
-adminRouter.route("/register").post(registerAdmin);
+adminRouter.route("/register").post(upload.single('profilePic'),registerAdmin);
 adminRouter.route("/login").post(loginAdmin);
 adminRouter.route("/logout").get(authenticateAdmin,adminLogout);
 adminRouter.route("/getProfile").get(authenticateAdmin,adminProfile);

@@ -9,20 +9,9 @@ dotenv.config({
     path: "../.env",
 });
 
-// Check if the environment is production or development
-const allowedOrigins = [
-    "http://localhost:5173", // Local development
-    "https://library-app-frontend-m1sw.onrender.com", // Netlify frontend
-];
 
 app.use(cors({
-    origin: function(origin, callback) {
-        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
-            callback(null, true); // Allow the request
-        } else {
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin:"http://localhost:5173",
     credentials: true,
 }));
 
