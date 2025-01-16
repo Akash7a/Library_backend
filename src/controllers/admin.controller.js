@@ -3,7 +3,8 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 
 const options = {
     httpOnly: true,
-    secure: false // process.env.NODE_ENV === "production",
+    secure: true,// process.env.NODE_ENV === "production",
+    sameSite:"None",
 };
 
 const registerAdmin = async (req, res) => {
