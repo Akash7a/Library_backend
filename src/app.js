@@ -11,7 +11,7 @@ dotenv.config({
 
 
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:"https://library-frontend-69j6.onrender.com",
     credentials: true,
 }));
 
